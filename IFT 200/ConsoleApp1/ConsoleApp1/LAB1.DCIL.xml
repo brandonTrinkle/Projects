@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<dcl:schema name="ORMModel1" xmlns:dcl="http://schemas.orm.net/DIL/DCIL" xmlns:dil="http://schemas.orm.net/DIL/DIL" xmlns:ddt="http://schemas.orm.net/DIL/DILDT" xmlns:dep="http://schemas.orm.net/DIL/DILEP" xmlns:dml="http://schemas.orm.net/DIL/DMIL" xmlns:ddl="http://schemas.orm.net/DIL/DDIL">
+	<dcl:domain name="&quot;Nr.&quot;" requestedName="Nr.">
+		<dcl:predefinedDataType name="INTEGER" />
+		<dcl:checkConstraint name="&quot;Nr._Unsigned_Chk&quot;" requestedName="Nr._Unsigned_Chk">
+			<dep:comparisonPredicate operator="greaterThanOrEquals">
+				<dep:valueKeyword />
+				<ddt:exactNumericLiteral value="0" />
+			</dep:comparisonPredicate>
+		</dcl:checkConstraint>
+	</dcl:domain>
+	<dcl:table name="Patient">
+		<dcl:column name="&quot;nr.&quot;" requestedName="nr." isNullable="false" isIdentity="false">
+			<dcl:domainRef name="&quot;Nr.&quot;" />
+		</dcl:column>
+		<dcl:column name="patientName" isNullable="false" isIdentity="false">
+			<dcl:predefinedDataType name="CHARACTER VARYING" length="30" />
+		</dcl:column>
+		<dcl:column name="isSmoker" isNullable="true" isIdentity="false">
+			<dcl:predefinedDataType name="BOOLEAN" />
+		</dcl:column>
+		<dcl:uniquenessConstraint name="Patient_PK" isPrimary="true">
+			<dcl:columnRef name="&quot;nr.&quot;" />
+		</dcl:uniquenessConstraint>
+	</dcl:table>
+	<dcl:table name="DrugAllergy">
+		<dcl:column name="patient" isNullable="false" isIdentity="false">
+			<dcl:domainRef name="&quot;Nr.&quot;" />
+		</dcl:column>
+		<dcl:column name="allergy" isNullable="false" isIdentity="false">
+			<dcl:predefinedDataType name="CHARACTER VARYING" length="20" />
+		</dcl:column>
+		<dcl:uniquenessConstraint name="DrugAllergy_PK" isPrimary="true">
+			<dcl:columnRef name="patient" />
+			<dcl:columnRef name="allergy" />
+		</dcl:uniquenessConstraint>
+		<dcl:referenceConstraint name="DrugAllergy_FK" targetTable="Patient">
+			<dcl:columnRef sourceName="patient" targetName="&quot;nr.&quot;" />
+		</dcl:referenceConstraint>
+	</dcl:table>
+</dcl:schema>

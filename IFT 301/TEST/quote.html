@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BT Customs - Contact Us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Honk&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html" class="honk-logo">BT Customs</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">Who We Are</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="projects.html">Our Work</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="quote.html"  class="active">Free Quote</a></li>
+            </ul>
+        </nav>
+        <div class="contact-info">
+            <span>Phone: 716-787-1049</span>
+            <span class="email-info">Email: contact@btcustoms.com</span>
+        </div>
+    </header>
+
+    <section class="contact-us">
+        <div class="contact-us-container">
+            <h1>Free Quote</h1>
+            <p>Please reach out with questions or to get a free quote!</p>
+            <form name="quoteForm" onsubmit="return validateForm()">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+                <div class="error-message" id="name-error"></div>
+                
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone">
+                <div class="error-message" id="phone-error"></div>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <div class="error-message" id="email-error"></div>
+                
+                <label for="description">Description of Work Requested:</label>
+                <textarea id="description" name="description"></textarea>
+                <div class="error-message" id="description-error"></div>
+                
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+            
+        </div>
+    </section>
+
+    <footer>
+        <a class="honk-logo">© BT Customs</a>
+    </footer>
+    <script src="validate.js" defer></script>
+</body>
+</html>

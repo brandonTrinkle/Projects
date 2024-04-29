@@ -1,0 +1,26 @@
+body {
+  background-color: lightblue;
+   font-family: verdana;
+   font-size: 12px;
+}
+
+h1 {
+  color: blue;
+  text-align: center;
+}
+
+p {
+  font-family: verdana;
+  font-size: 20px;
+}
+
+a {
+	font-family: verdana;
+	color: green;
+    font-size: 20px;
+	text-decoration: none;
+}
+
+div{
+	text-align: center;
+}

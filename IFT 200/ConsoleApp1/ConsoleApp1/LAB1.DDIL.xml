@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<dil:root xmlns:dil="http://schemas.orm.net/DIL/DIL" xmlns:dcl="http://schemas.orm.net/DIL/DCIL" xmlns:ddt="http://schemas.orm.net/DIL/DILDT" xmlns:dep="http://schemas.orm.net/DIL/DILEP" xmlns:dms="http://schemas.orm.net/DIL/DILMS" xmlns:dml="http://schemas.orm.net/DIL/DMIL" xmlns:ddl="http://schemas.orm.net/DIL/DDIL">
+	<dms:startTransactionStatement isolationLevel="SERIALIZABLE" accessMode="READ WRITE" />
+	<ddl:schemaDefinition schemaName="ORMModel1" defaultCharacterSet="UTF8" />
+	<dms:setSchemaStatement>
+		<ddt:characterStringLiteral value="ORMMODEL1" />
+	</dms:setSchemaStatement>
+	<ddl:domainDefinition name="&quot;Nr.&quot;" schema="ORMModel1">
+		<ddt:exactNumeric type="INTEGER" />
+		<ddl:domainConstraintDefinition name="&quot;Nr._Unsigned_Chk&quot;">
+			<ddl:checkConstraintDefinition>
+				<dep:comparisonPredicate operator="greaterThanOrEquals">
+					<dep:valueKeyword />
+					<ddt:exactNumericLiteral value="0" />
+				</dep:comparisonPredicate>
+			</ddl:checkConstraintDefinition>
+		</ddl:domainConstraintDefinition>
+	</ddl:domainDefinition>
+	<ddl:tableDefinition name="Patient" schema="ORMModel1">
+		<ddl:columnDefinition name="&quot;nr.&quot;">
+			<ddt:domain name="&quot;Nr.&quot;" schema="ORMModel1" />
+			<ddl:columnConstraintDefinition>
+				<ddl:notNullKeyword />
+			</ddl:columnConstraintDefinition>
+		</ddl:columnDefinition>
+		<ddl:columnDefinition name="patientName">
+			<ddt:characterString type="CHARACTER VARYING" length="30" />
+			<ddl:columnConstraintDefinition>
+				<ddl:notNullKeyword />
+			</ddl:columnConstraintDefinition>
+		</ddl:columnDefinition>
+		<ddl:columnDefinition name="isSmoker">
+			<ddt:boolean type="BOOLEAN" />
+		</ddl:columnDefinition>
+		<ddl:tableConstraintDefinition name="Patient_PK">
+			<ddl:uniqueConstraintDefinition type="PRIMARY KEY">
+				<dep:simpleColumnReference name="&quot;nr.&quot;" />
+			</ddl:uniqueConstraintDefinition>
+		</ddl:tableConstraintDefinition>
+	</ddl:tableDefinition>
+	<ddl:tableDefinition name="DrugAllergy" schema="ORMModel1">
+		<ddl:columnDefinition name="patient">
+			<ddt:domain name="&quot;Nr.&quot;" schema="ORMModel1" />
+			<ddl:columnConstraintDefinition>
+				<ddl:notNullKeyword />
+			</ddl:columnConstraintDefinition>
+		</ddl:columnDefinition>
+		<ddl:columnDefinition name="allergy">
+			<ddt:characterString type="CHARACTER VARYING" length="20" />
+			<ddl:columnConstraintDefinition>
+				<ddl:notNullKeyword />
+			</ddl:columnConstraintDefinition>
+		</ddl:columnDefinition>
+		<ddl:tableConstraintDefinition name="DrugAllergy_PK">
+			<ddl:uniqueConstraintDefinition type="PRIMARY KEY">
+				<dep:simpleColumnReference name="patient" />
+				<dep:simpleColumnReference name="allergy" />
+			</ddl:uniqueConstraintDefinition>
+		</ddl:tableConstraintDefinition>
+	</ddl:tableDefinition>
+	<ddl:alterTableStatement name="DrugAllergy" schema="ORMModel1">
+		<ddl:addTableConstraintDefinition name="DrugAllergy_FK">
+			<ddl:referentialConstraintDefinition>
+				<dep:simpleColumnReference name="patient" />
+				<ddl:referencesSpecification name="Patient" onDelete="RESTRICT" onUpdate="RESTRICT" schema="ORMModel1">
+					<dep:simpleColumnReference name="&quot;nr.&quot;" />
+				</ddl:referencesSpecification>
+			</ddl:referentialConstraintDefinition>
+		</ddl:addTableConstraintDefinition>
+	</ddl:alterTableStatement>
+	<dms:commitStatement />
+</dil:root>

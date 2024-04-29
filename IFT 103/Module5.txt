@@ -1,0 +1,9 @@
+$name = Read-Host "What is your first and last name"
+$occupation = Read-Host "What is your profession"
+$date = Get-Date
+$checkfile = Test-Path -Path "C:\Users\Btrin\OneDrive\Desktop\IFT 103\Lab6.txt"
+$Lab6 = ($name , $occupation, $date)
+$Lab6 | Out-File -FilePath "C:\Users\Btrin\OneDrive\Desktop\IFT 103\Lab6.txt"
+    if ($checkfile) {
+        Write-Host "The file Exists"
+    }

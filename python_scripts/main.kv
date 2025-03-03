@@ -1,0 +1,83 @@
+#:kivy ! 2.3.0
+
+<ScannerApp>:
+    orientation: 'vertical'
+    padding: [20, 20, 20, 20]
+    spacing: 20
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text: "Scanner Input:"
+        color: 0.08, 1, 0.92, 1
+        font_size: '24sp'
+        bold: True
+        size_hint_y: None
+        height: self.texture_size[1]
+
+    TextInput:
+        id: scanner_input
+        multiline: False
+        font_size: '20sp'
+        foreground_color: 0.08, 1, 0.92, 1
+        background_color: 0.1, 0.1, 0.1, 1
+        background_normal: ''
+        border: [4, 4, 4, 4]
+        size_hint_y: None
+        height: 40
+        padding: [10, 10, 10, 10]
+
+    BoxLayout:
+        size_hint_y: None
+        height: 60
+        spacing: 20
+
+        Button:
+            text: "Start"
+            on_press: root.start_process()
+            background_color: 0.08, 1, 0.92, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: '20sp'
+            bold: True
+            size_hint: None, None
+            size: 120, 50
+
+        Button:
+            text: "Reset"
+            on_press: root.reset_process()
+            background_color: 0.08, 1, 0.92, 1
+            color: 0.1, 0.1, 0.1, 1
+            font_size: '20sp'
+            bold: True
+            size_hint: None, None
+            size: 120, 50
+
+    ProgressBar:
+        max: 100
+        value: root.progress
+        size_hint_y: None
+        height: 30
+        canvas.before:
+            Color:
+                rgba: 0.3, 0.3, 0.3, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        canvas.after:
+            Color:
+                rgba: 0.08, 1, 0.92, 1
+            Rectangle:
+                pos: self.pos
+                size: self.width * (self.value / self.max), self.height
+
+    Label:
+        text: root.status
+        color: 0.08, 1, 0.92, 1
+        font_size: '20sp'
+        bold: True
+        size_hint_y: None
+        height: self.texture_size[1]

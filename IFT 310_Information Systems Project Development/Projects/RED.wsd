@@ -1,0 +1,53 @@
+@startuml
+entity "Departments" as DEPT {
+  * DepartmentID : int <<PK>>
+  --
+  Name : string
+}
+
+entity "Users" as USER {
+  * UserID : int <<PK>>
+  --
+  Name : string
+  Role : string
+  Email : string
+  DepartmentID : int <<FK>>
+}
+
+entity "Items" as ITEM {
+  * ItemID : int <<PK>>
+  --
+  Name : string
+  Category : string
+  PurchaseDate : date
+  Vendor : string
+  Location : string
+  Status : string
+  UserID : int <<FK>>
+}
+
+entity "Transactions" as TRANS {
+  * TransactionID : int <<PK>>
+  --
+  ItemID : int <<FK>>
+  UserID : int <<FK>>
+  Type : string
+  Date : date
+  Quantity : int
+}
+
+entity "Alerts" as ALERT {
+  * AlertID : int <<PK>>
+  --
+  ItemID : int <<FK>>
+  Type : string
+  Description : string
+  Date : date
+}
+
+DEPT ||--o{ USER : "has"
+USER ||--o{ TRANS : "performs"
+ITEM ||--o{ TRANS : "involves"
+ITEM ||--o{ ALERT : "triggers"
+USER ||--o{ ITEM : "manages"
+@enduml

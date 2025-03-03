@@ -1,0 +1,44 @@
+/*
+** Author: Brandon Trinkle
+** Course: IFT/300
+** SQL Server Version: Microsoft SQL Server 2012 (SP1) 
+
+** OS : Windows
+** History
+** Date Created    Comments
+** 11/20/2024      
+*/
+-- Query 1: 
+SELECT DISTINCT VendorName
+FROM Vendors
+WHERE VendorID IN (
+    SELECT VendorID
+    FROM Invoices
+)
+ORDER BY VendorName;
+
+-- Query 2: 
+SELECT InvoiceNumber, InvoiceTotal
+FROM Invoices
+WHERE PaymentTotal > (
+    SELECT AVG(PaymentTotal)
+    FROM Invoices
+    WHERE PaymentTotal > 0
+);
+
+-- Query 3: 
+WITH RankedPayments AS (
+    SELECT PaymentTotal, 
+           ROW_NUMBER() OVER (ORDER BY PaymentTotal) AS RowAsc,
+           ROW_NUMBER() OVER (ORDER BY PaymentTotal DESC) AS RowDesc
+    FROM Invoices
+    WHERE PaymentTotal > 0
+),
+Median AS (
+    SELECT AVG(PaymentTotal) AS MedianValue
+    FROM RankedPayments
+    WHERE RowAsc = RowDesc OR RowAsc + 1 = RowDesc
+)
+SELECT InvoiceNumber, InvoiceTotal
+FROM Invoices
+WHERE PaymentTotal > (SELECT MedianValue FROM Median);

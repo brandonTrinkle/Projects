@@ -1,5 +1,0 @@
-This will only word for a windows machine.  Install .exe file in ookla-speed-test-1.2.0-win64.
-
-Speed test runs every 15 mins.  To get the full experience, start main.go and let it run for 30 mins.  It will generate and html graphic that will show the speed test stats from the csv file.
-
-Enjoy!

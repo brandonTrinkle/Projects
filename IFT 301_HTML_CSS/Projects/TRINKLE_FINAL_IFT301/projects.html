@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BT Customs - Our Work</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Honk&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html" class="honk-logo">BT Customs</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">Who We Are</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="projects.html" class="active">Our Work</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="quote.html">Free Quote</a></li>
+            </ul>
+        </nav>
+        <div class="contact-info">
+            <span>Phone: 716-787-1049</span>
+            <span>Email: contact@btcustoms.com</span>
+        </div>
+    </header>
+    
+    <main>
+        <section id="projects-gallery">
+            <div class="project-container">
+                <h3>Porch Install</h3>
+                <p class="quote">"This Porch has transformed our home, and we couldn't be happier with the results!" - Alanna</p>
+                <div class="project-image" onclick="openLightbox(1);">
+                    <img src="Outside/image0.jpeg" alt="Project 1">
+                </div>
+            </div>
+            <div class="project-container">
+                <h3>Custom Bar</h3>
+                <p class="quote">"This is perfect for hosting parties and watching Bills games!" - Alanna</p>
+                <div class="project-image" onclick="openLightbox(2);">
+                    <img src="Custom/IMG_0091.jpg" alt="Project 2">
+                </div>
+            </div>
+            <div class="project-container">
+                <h3>Upstairs Renovation</h3>
+                <p class="quote">"Brandon relocated our bathroom into a master bedroom suite and added a third bedroom upstairs! Perfect addition for a growing Family!" - Alanna</p>
+                <div class="project-image" onclick="openLightbox(3);">
+                    <img src="Inside/IMG_3394.JPG" alt="Project 3">
+                </div>
+            </div>
+        </section>
+        <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+            <span class="close-btn" onclick="closeLightbox(event)">&times;</span>
+            <img id="lightbox-img" src="">
+            <a class="prev" onclick="changeImage(-1)">&#10094;</a>
+            <a class="next" onclick="changeImage(1)">&#10095;</a>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© BT Customs</p>
+    </footer>
+    <script src="projects.js"></script>
+</body>
+</html>

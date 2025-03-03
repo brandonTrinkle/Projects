@@ -1,0 +1,5 @@
+item cost
+steak 20
+banana 1
+burger 8
+chicken 12

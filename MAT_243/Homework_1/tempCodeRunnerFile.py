@@ -1,0 +1,1 @@
+                # Convert boolean values to strings and align columns

@@ -1,0 +1,20 @@
+// Student Name: Brandon Trinkle
+// Student ID: 1217455031
+// Date: 3/15/2025
+
+### GET All Books
+GET http://localhost:4000/api/v1/books
+
+### GET a Specific Book by ID
+GET http://localhost:4000/api/v1/books/1
+
+### POST a New Book
+POST http://localhost:4000/api/v1/books
+Content-Type: application/json
+
+{
+  "title": "Harry Potter and the Sorcerer's Stone",
+  "author": "J.K. Rowling",
+  "genre": "Fantasy",
+  "year": 1997
+}

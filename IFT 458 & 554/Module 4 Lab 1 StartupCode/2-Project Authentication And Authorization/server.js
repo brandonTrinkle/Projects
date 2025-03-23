@@ -11,11 +11,12 @@ const mongoose = require('mongoose');
 const app = require('./app');
 
 // Connect to the database and replace the password
-const DB = process.env.DATABASE.replace(
-  '<password>',
-  process.env.DATABASE_PASSWORD
-);
-
+//const DB = process.env.DATABASE.replace(
+//  '<password>',
+ // process.env.DATABASE_PASSWORD
+//);
+const DB = "mongodb+srv://btrinkle52:lVFgPGisucpwqBkn@trinklecluster.obqkf.mongodb.net/?retryWrites=true&w=majority&appName=TrinkleCluster"
+console.log(DB);
 // Connect to the database
 console.log(DB); // check the database connection string
 mongoose

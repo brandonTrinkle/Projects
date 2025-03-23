@@ -1,41 +1,40 @@
+// server.js
 
-// Required for Node to read .env file
+// Set up global punycode so that upstream dependencies use the userland version
+global.punycode = require('punycode');
+
+// Load environment variables early
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
-// required for communicating and connecting to the database
-// and perform CRUD operations
+// Import mongoose and configure strictQuery to suppress the warning
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
 
-// required for the application to run
+// Import your Express app
 const app = require('./app');
 
-// Connect to the database and replace the password
-//const DB = process.env.DATABASE.replace(
-//  '<password>',
- // process.env.DATABASE_PASSWORD
-//);
-const DB = "mongodb+srv://btrinkle52:lVFgPGisucpwqBkn@trinklecluster.obqkf.mongodb.net/?retryWrites=true&w=majority&appName=TrinkleCluster"
-console.log(DB);
-// Connect to the database
-console.log(DB); // check the database connection string
+// Define your MongoDB connection string (or use one from your environment variables)
+const DB =
+  process.env.DATABASE ||
+  "mongodb+srv://btrinkle52:lVFgPGisucpwqBkn@trinklecluster.obqkf.mongodb.net/?retryWrites=true&w=majority&appName=TrinkleCluster";
+
+console.log("Connecting to DB:", DB);
+
+// Connect to the database, then start the server if successful
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-    //useCreateIndex: true,
-    //useFindAndModify: false
   })
   .then(() => {
-    console.log('DB connection successful!')
+    console.log('DB connection successful!');
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`App running on port ${port}...`);
+      console.log(`To test the IFT 458 REST App, visit: http://localhost:${port}...`);
+    });
   })
   .catch(err => {
-    console.log('DB connection failed!');
-    console.log(err); 
+    console.error('DB connection failed!', err);
   });
-
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-  console.log(`To test the IFT 458 REST App Click Or Type: http://localhost:${port}...`);
-});

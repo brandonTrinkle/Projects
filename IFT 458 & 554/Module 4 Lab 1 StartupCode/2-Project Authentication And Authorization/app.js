@@ -4,61 +4,92 @@
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-
-
 // start express app
-const app = express()
+const app = express();
 
-// 1) GLOBAL MIDDLEWARES to log the request to the console
+// 1) GLOBAL MIDDLEWARES & CHAINED MIDDLEWARE (Step 1)
+
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-  }
+  app.use(morgan('dev'));
+}
 
-// Set the view engine to ejs and set the views directory
+// First chained middleware: logs a message then passes control
+app.use((req, res, next) => {
+  console.log('Chained Middleware 1: First middleware');
+  next();
+});
+
+// Second chained middleware: logs a second message then passes control
+app.use((req, res, next) => {
+  console.log('Chained Middleware 2: Second middleware');
+  next();
+});
+
+// 2) CUSTOM MIDDLEWARE (Step 2)
+
+function logMethodAndUrl(req, res, next) {
+  console.log(`Custom Middleware: Request Method: ${req.method}, URL: ${req.url}`);
+  next();
+}
+app.use(logMethodAndUrl);
+
+// EXPRESS APP SETTINGS & GLOBAL MIDDLEWARES
+
 app.set('view engine', 'ejs');
-console.log('dirname', __dirname);
 app.set('views', path.join(__dirname, 'views'));
-console.log('views', path.join(__dirname, 'views'));
+console.log('Views directory:', path.join(__dirname, 'views'));
 
-// 2) GLOBAL MIDDLEWARES // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
-console.log('public', path.join(__dirname, 'public'));
+console.log('Public directory:', path.join(__dirname, 'public'));
 
-// 3) GLOBAL MIDDLEWARES // Body parser, reading data from body into req.body
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
-app.use(bodyParser.json())
-
-// parse cookies
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 
-// Create a home route
+// HOME ROUTE
 app.get('/', (req, res) => {
-    res.render('home',
-    { 
-      title: 'Dashboard',
-      user: undefined,
-      books: [],
-      api_version: process.env.API_VERSION
-    });
+  res.render('home', {
+    title: 'Dashboard',
+    user: undefined,
+    books: [],
+    api_version: process.env.API_VERSION
+  });
 });
-// 4)  Start defining routes for UI and API
-const viewRouter = require('./routes/viewRoutes')
+
+// DEFINE ROUTES FOR UI & API
+
+const viewRouter = require('./routes/viewRoutes');
 const viewUrl = `${process.env.API_VERSION || '/api/v1'}/views`;
 console.log('viewUrl:', viewUrl);
 app.use(viewUrl, viewRouter);
 
-// 5) ROUTES API for Users
 const userRouter = require('./routes/userRoutes');
-app.use('/api/v1/books', userRouter);
+app.use('/api/v1/users', userRouter);
 
-// // 6) ROUTES API for Books
-const bookRoutes = require('./routes/bookRoutes.js');
+const bookRoutes = require('./routes/bookRoutes');
 app.use('/api/v1/books', bookRoutes);
 
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard', {
+    title: 'Dashboard',
+    user: undefined,
+    api_version: process.env.API_VERSION
+  });
+});
+
+// 4) ERROR HANDLING (Assignment Step 3)
+
+app.get('/error', (req, res) => {
+  throw new Error('This is a test error!');
+});
+
+app.use((err, req, res, next) => {
+  console.error('Error encountered:', err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// EXPORT APP 
 module.exports = app;

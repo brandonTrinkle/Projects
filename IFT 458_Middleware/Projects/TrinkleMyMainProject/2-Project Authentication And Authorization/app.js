@@ -7,33 +7,48 @@ const authMiddleware = require('./custom-middlewares/authMiddleware');
 
 const app = express();
 
-// Middleware Logging using Morgan
+// ===================================================
+//                1. GLOBAL MIDDLEWARES
+// ===================================================
+
+// Logging Middleware (Morgan)
 app.use(morgan('dev'));
 
-// Custom Middleware Logger (for debugging all middleware clearly)
-const middlewareLogger = (middlewareName) => (req, res, next) => {
-    console.log(`[Middleware] ${middlewareName} triggered for ${req.method} ${req.originalUrl}`);
-    next();
+// Custom Middleware Logger
+const middlewareLogger = (name) => (req, res, next) => {
+  const userInfo = req.user ? ` - User: ${req.user.email}` : '';
+  console.log(`[Custom Middleware] ${name}${userInfo} - Method: ${req.method}, URL: ${req.originalUrl}, Time: ${new Date().toISOString()}`);
+  next();
 };
 
-// Set view engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Body parsing middleware with logging
+// Body Parsing Middlewares
 app.use(middlewareLogger('BodyParser URL Encoded'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(middlewareLogger('BodyParser JSON'));
 app.use(bodyParser.json());
 
+// Cookie Parsing Middleware
 app.use(middlewareLogger('CookieParser'));
 app.use(cookieParser());
 
-// Home route (basic view rendering)
+// Serving Static Files
+app.use(middlewareLogger('Static Files Middleware'));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ===================================================
+//              2. VIEW ENGINE SETUP
+// ===================================================
+
+console.log(`[Setup] View Engine: EJS, Views Directory: ${path.join(__dirname, 'views')}`);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// ===================================================
+//               3. ROUTES DEFINITION
+// ===================================================
+
+// Home Page Route
 app.get('/', middlewareLogger('Home Route'), (req, res) => {
     res.render('home', {
         title: 'Dashboard',
@@ -43,20 +58,23 @@ app.get('/', middlewareLogger('Home Route'), (req, res) => {
     });
 });
 
-// Dynamic Route with Validation Middleware
-const isValidUserId = (userId) => /^[0-9a-fA-F]{24}$/.test(userId); // MongoDB ID format
+// Dynamic Route Validation Middleware
+const isValidUserId = (userId) => /^[0-9a-fA-F]{24}$/.test(userId);
 
-app.use('/users/:userId', middlewareLogger('UserID Validation Middleware'), (req, res, next) => {
-    if (!isValidUserId(req.params.userId)) {
+app.param('userId', (req, res, next, userId) => {
+    console.log(`[Route Validation Middleware] UserId Param Validator triggered for userId: ${userId}`);
+    if (!isValidUserId(userId)) {
+        console.log('[Route Validation Middleware] Invalid User ID format detected.');
         return res.status(400).send('Invalid User ID');
     }
+    console.log('[Route Validation Middleware] User ID format validated.');
     next();
 });
 
-// Complex Middleware Chain Route
+// Complex Middleware Chain (Authentication & Authorization)
 app.get('/secure-data/:userId',
-    middlewareLogger('Authentication Middleware'), authMiddleware.authenticate,
-    middlewareLogger('Authorization Middleware'), authMiddleware.authorize,
+    middlewareLogger('Auth Middleware (Authenticate)'), authMiddleware.authenticate,
+    middlewareLogger('Auth Middleware (Authorize)'), authMiddleware.authorize,
     middlewareLogger('Data Processing Middleware'), (req, res, next) => {
         req.processedAt = new Date();
         next();
@@ -70,30 +88,38 @@ app.get('/secure-data/:userId',
     }
 );
 
-// View routes setup clearly logged
+// ===================================================
+//                 4. API & VIEW ROUTES
+// ===================================================
+
+// View Routes
 const viewRouter = require('./routes/viewRoutes');
 const viewUrl = `${process.env.API_VERSION}/views`;
 app.use(viewUrl, middlewareLogger('View Router'), viewRouter);
 
-// User routes setup clearly logged
+// User API Routes
 const userRouter = require('./routes/userRoutes');
 const userUrl = `${process.env.API_VERSION}/users`;
 app.use(userUrl, middlewareLogger('User Router'), userRouter);
 
-// Book routes setup clearly logged
-const booksRoutes = require('./routes/bookRoutes.js');
+// Book API Routes
+const booksRoutes = require('./routes/bookRoutes');
 const bookUrl = `${process.env.API_VERSION}/books`;
 app.use(bookUrl, middlewareLogger('Book Router'), booksRoutes);
 
-// 404 Not Found Middleware
-app.use(middlewareLogger('404 Handler'), (req, res, next) => {
-    console.log('[APP] 404 handler triggered:', req.method, req.originalUrl);
+// ===================================================
+//              5. ERROR HANDLING MIDDLEWARE
+// ===================================================
+
+// 404 Not Found Handler
+app.use(middlewareLogger('404 Error Handler'), (req, res) => {
+    console.log('[ErrorHandling Middleware] 404 - Route not found:', req.originalUrl);
     res.status(404).render('404', { url: req.originalUrl });
 });
 
-// 500 Internal Server Error Middleware
-app.use(middlewareLogger('500 Handler'), (err, req, res, next) => {
-    console.error('[APP] 500 error:', err.stack);
+// Global Error Handler (500 Internal Server Error)
+app.use(middlewareLogger('500 Error Handler'), (err, req, res, next) => {
+    console.error('[ErrorHandling Middleware] 500 - Internal Server Error:', err.stack);
     res.status(500).render('500', { error: err });
 });
 

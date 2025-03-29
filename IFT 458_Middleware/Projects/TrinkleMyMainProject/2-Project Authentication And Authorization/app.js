@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -11,116 +12,125 @@ const app = express();
 //                1. GLOBAL MIDDLEWARES
 // ===================================================
 
-// Logging Middleware (Morgan)
-app.use(morgan('dev'));
+app.use(morgan('dev')); // basic HTTP request logging
 
-// Custom Middleware Logger
-const middlewareLogger = (name) => (req, res, next) => {
-  const userInfo = req.user ? ` - User: ${req.user.email}` : '';
-  console.log(`[Custom Middleware] ${name}${userInfo} - Method: ${req.method}, URL: ${req.originalUrl}, Time: ${new Date().toISOString()}`);
-  next();
-};
-
-// Body Parsing Middlewares
-app.use(middlewareLogger('BodyParser URL Encoded'));
+// Parsers
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(middlewareLogger('BodyParser JSON'));
 app.use(bodyParser.json());
-
-// Cookie Parsing Middleware
-app.use(middlewareLogger('CookieParser'));
 app.use(cookieParser());
-
-// Serving Static Files
-app.use(middlewareLogger('Static Files Middleware'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ===================================================
 //              2. VIEW ENGINE SETUP
 // ===================================================
 
-console.log(`[Setup] View Engine: EJS, Views Directory: ${path.join(__dirname, 'views')}`);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ===================================================
-//               3. ROUTES DEFINITION
+//           3. CUSTOM MIDDLEWARE LOGGER FUNCTION
 // ===================================================
 
-// Home Page Route
+const middlewareLogger = (name) => (req, res, next) => {
+  const userInfo = req.user ? ` - User: ${req.user.email}` : ' - User: Guest';
+  console.log(`[Custom Middleware] ${name}${userInfo} - Method: ${req.method}, URL: ${req.originalUrl}, Time: ${new Date().toISOString()}`);
+  next();
+};
+
+// ===================================================
+//               4. ROUTES DEFINITION
+// ===================================================
+
+// Home route (no authentication required)
 app.get('/', middlewareLogger('Home Route'), (req, res) => {
-    res.render('home', {
-        title: 'Dashboard',
-        user: undefined,
-        books: [],
-        api_version: process.env.API_VERSION
-    });
+  res.render('home', {
+    title: 'Dashboard',
+    user: req.user,
+    books: [],
+    api_version: process.env.API_VERSION
+  });
 });
 
-// Dynamic Route Validation Middleware
-const isValidUserId = (userId) => /^[0-9a-fA-F]{24}$/.test(userId);
+// View routes
+const viewRouter = require('./routes/viewRoutes');
+app.use(`${process.env.API_VERSION}/views`, middlewareLogger('View Router'), viewRouter);
 
-app.param('userId', (req, res, next, userId) => {
-    console.log(`[Route Validation Middleware] UserId Param Validator triggered for userId: ${userId}`);
-    if (!isValidUserId(userId)) {
-        console.log('[Route Validation Middleware] Invalid User ID format detected.');
-        return res.status(400).send('Invalid User ID');
-    }
-    console.log('[Route Validation Middleware] User ID format validated.');
-    next();
+// User routes 
+const userRouter = require('./routes/userRoutes');
+app.use(`${process.env.API_VERSION}/users`, middlewareLogger('User Router'), userRouter);
+
+// Test route to intentionally throw a 500 error
+app.get('/trigger-500', (req, res, next) => {
+  console.log('[Test] Triggering intentional 500 error.');
+  next(new Error('Intentional 500 error for testing'));
 });
 
-// Complex Middleware Chain (Authentication & Authorization)
+
+// ===================================================
+//          5. PROTECTED ROUTES WITH AUTHENTICATION
+// ===================================================
+
+// Middleware runs explicitly after authentication to log user clearly
+app.use(authMiddleware.authenticate);
+
+// Book routes (authenticated routes)
+const booksRoutes = require('./routes/bookRoutes');
+app.use(`${process.env.API_VERSION}/books`, middlewareLogger('Book Router'), booksRoutes);
+
+// Secure data route (complex middleware chain example)
 app.get('/secure-data/:userId',
-    middlewareLogger('Auth Middleware (Authenticate)'), authMiddleware.authenticate,
-    middlewareLogger('Auth Middleware (Authorize)'), authMiddleware.authorize,
-    middlewareLogger('Data Processing Middleware'), (req, res, next) => {
-        req.processedAt = new Date();
-        next();
-    },
-    middlewareLogger('Response Middleware'), (req, res) => {
-        res.json({
-            userId: req.params.userId,
-            timestamp: req.processedAt,
-            message: 'Secure data accessed successfully.'
-        });
-    }
+  middlewareLogger('Authorization Middleware'), authMiddleware.authorize,
+  middlewareLogger('Data Processing Middleware'), (req, res, next) => {
+    req.processedAt = new Date();
+    next();
+  },
+  middlewareLogger('Response Middleware'), (req, res) => {
+    res.json({
+      userId: req.params.userId,
+      timestamp: req.processedAt,
+      message: 'Secure data accessed successfully.'
+    });
+  }
 );
 
 // ===================================================
-//                 4. API & VIEW ROUTES
+//              6. ERROR HANDLING MIDDLEWARE
 // ===================================================
 
-// View Routes
-const viewRouter = require('./routes/viewRoutes');
-const viewUrl = `${process.env.API_VERSION}/views`;
-app.use(viewUrl, middlewareLogger('View Router'), viewRouter);
+// Brandon Trinkle
+// ASU ID: 1217455031
+// IFT 458
+// 404 Handler
+app.use((req, res) => {
+  const viewPath = path.join(__dirname, 'views', '404.ejs');
 
-// User API Routes
-const userRouter = require('./routes/userRoutes');
-const userUrl = `${process.env.API_VERSION}/users`;
-app.use(userUrl, middlewareLogger('User Router'), userRouter);
+  if (fs.existsSync(viewPath)) {
+      res.status(404).render('404', { url: req.originalUrl });
+  } else {
+      console.error('[ErrorHandling] Missing 404.ejs view file.');
+      res.status(404).send('404 - Page not found.');
+  }
 
-// Book API Routes
-const booksRoutes = require('./routes/bookRoutes');
-const bookUrl = `${process.env.API_VERSION}/books`;
-app.use(bookUrl, middlewareLogger('Book Router'), booksRoutes);
-
-// ===================================================
-//              5. ERROR HANDLING MIDDLEWARE
-// ===================================================
-
-// 404 Not Found Handler
-app.use(middlewareLogger('404 Error Handler'), (req, res) => {
-    console.log('[ErrorHandling Middleware] 404 - Route not found:', req.originalUrl);
-    res.status(404).render('404', { url: req.originalUrl });
+  console.log(`[ErrorHandling] 404 - Route not found: ${req.originalUrl}`);
 });
 
 // Global Error Handler (500 Internal Server Error)
-app.use(middlewareLogger('500 Error Handler'), (err, req, res, next) => {
-    console.error('[ErrorHandling Middleware] 500 - Internal Server Error:', err.stack);
-    res.status(500).render('500', { error: err });
+app.use((err, req, res, next) => {
+  const isDev = process.env.NODE_ENV === 'development';
+  const viewPath = path.join(__dirname, 'views', '500.ejs');
+
+  if (isDev) {
+      console.error('[ErrorHandling] 500 - Internal Server Error:', err.stack);
+  } else {
+      console.error('[ErrorHandling] 500 - Internal Server Error:', err.message);
+  }
+
+  if (fs.existsSync(viewPath)) {
+      res.status(500).render('500', { error: isDev ? err : { message: 'An internal error occurred.' } });
+  } else {
+      console.error('[ErrorHandling] Missing 500.ejs view file.');
+      res.status(500).send('500 - Internal Server Error.');
+  }
 });
 
 module.exports = app;

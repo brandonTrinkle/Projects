@@ -1,3 +1,5 @@
+const https = require('https');
+const fs = require('fs');
 
 // Required for Node to read .env file
 const dotenv = require('dotenv');
@@ -32,10 +34,19 @@ mongoose
     console.log('DB connection failed!');
     console.log(err); 
   });
-
+ 
+// Brandon Trinkle
+// ASU ID: 1217455031
+// IFT 458
+// Create a HTTPS server
+  const options = {
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+  };
+// Change listenr to have options
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-  console.log(`To test the IFT 458 REST App Click Or Type: http://localhost:${port}...`);
+const server = https.createServer(options, app).listen(port, () => {
+  console.log(`HTTPS server is running on port ${port}...`);
+  console.log(`Try: https://localhost:${port}`);
 });
 

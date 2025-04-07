@@ -1,0 +1,1 @@
+const viewRouter = require('./routes/viewRoutes');

@@ -49,4 +49,3 @@ const server = https.createServer(options, app).listen(port, () => {
   console.log(`HTTPS server is running on port ${port}...`);
   console.log(`Try: https://localhost:${port}`);
 });
-

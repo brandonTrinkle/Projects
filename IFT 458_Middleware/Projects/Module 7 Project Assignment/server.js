@@ -40,8 +40,8 @@ mongoose
 // IFT 458
 // Create a HTTPS server
   const options = {
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
+    key: fs.readFileSync('./certs/server.key'),
+    cert: fs.readFileSync('./certs/server.cert')
   };
 // Change listenr to have options
 const port = process.env.PORT || 3000;

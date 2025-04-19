@@ -110,13 +110,7 @@ app.get('/secure-data/:userId',
 
 // 404 Not Found Handler
 app.use((req, res) => {
-  const viewPath = path.join(__dirname, 'views', '404.ejs');
-  if (fs.existsSync(viewPath)) {
-    res.status(404).render('404', { url: req.originalUrl });
-  } else {
-    console.error('[ErrorHandling] Missing 404.ejs view file.');
-    res.status(404).send('404 - Page not found.');
-  }
+  res.status(404).send('404 - Page not found.');
   console.log(`[ErrorHandling] 404 - Route not found: ${req.originalUrl}`);
 });
 

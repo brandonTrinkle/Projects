@@ -13,15 +13,15 @@ exports.addBook = async (req, res) => {
 exports.createBook = async (req, res) => {
     try {
         const book = new Book({
-        title: req.body.title,
+            title: req.body.title,
             author: req.body.author,
             description: req.body.description,
             exchangeType: req.body.exchangeType,
-            owner: req.user._id,  // Assuming req.user contains the authenticated user
-            status: req.body.status // Or default to 'available' as per your schema
+            owner: req.user._id,
+            status: req.body.status 
         });
         const newBook = await book.save();
-        res.redirect('/books'); // assuming '/books' is where you list all books
+        res.redirect('/books');
     } catch (err) {
         res.status(400).render('appError', { title: 'Create Book', user: req.user, errors: err.errors });
     }
@@ -81,7 +81,6 @@ exports.updateBookById = async (req, res) => {
       }
       const updatedBooks = await Book.find();
       res.render(`./books/bookListForm`, {books: updatedBooks}); // Redirect to book detail page
-      //res.redirect(`/books/${req.params.id}`); // Redirect to book detail page
     } catch (err) {
         res.status(500).render('error', { message: err.message });
     }

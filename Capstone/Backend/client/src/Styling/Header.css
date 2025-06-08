@@ -1,0 +1,39 @@
+body {
+    font-family: 'Glacial Indifference', sans-serif;
+    background-color: #CAD2C5;
+    margin: 0;
+    padding: 0;
+}
+
+.navi {
+    background-color: #2F3E46;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+}
+.navi .logo img {
+        height: 100px;
+        width: auto;
+    }
+
+    .navi ul {
+        list-style: none;
+        display: flex;
+        padding-right: 15px;
+        gap: 45px;
+        margin: 0;
+        padding: 0;
+       
+    }
+
+.navi ul li {
+            text-decoration: none;
+            color: #84A98C;
+            font-size: 38px;
+            right: 0;
+}
+
+#p1 {
+    font-size: 28px;
+}

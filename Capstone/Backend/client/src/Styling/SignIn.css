@@ -1,0 +1,91 @@
+body {
+    font-family: 'Glacial Indifference', sans-serif;
+    background-color: #f8fff4;
+    margin: 0;
+    padding: 0;
+}
+
+.sign-container {
+    background-color: #CAD2C5;
+    width: 450px;
+    height: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border: 3px solid #2F3E46;
+    box-sizing: border-box;
+}
+
+    .sign-container button {
+        width: 100%;
+        max-width: 300px;
+        background-color: #2F3E46;
+        color: white;
+        font-size: 18px;
+        padding: 14px;
+        border-radius: 25px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+    }
+
+    .sign-container input {
+        width: 400px;
+        background-color: #E5E5E5;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        margin: 8px 0;
+        border-radius: 5px;
+        box-sizing: border-box;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sign-container .logo {
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        display: block;
+        margin:20px auto;
+    }
+
+        .sign-container .logo img {
+            height: 100px;
+            width: auto;
+            border-radius: 50%;
+        }
+
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2F3E46;
+}
+
+.sign-container form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sign-have-account {
+    display: flex;
+    justify-content: center;
+    margin-top: 205px;
+}
+
+.sign-account {
+    width: 100%;
+    max-width: 225px;
+    background-color: #2F3E46;
+    color: white;
+    font-size: 18px;
+    padding: 14px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    text-decoration: none;
+}

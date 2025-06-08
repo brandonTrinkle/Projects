@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Glacial Indifference', sans-serif;
+}
+
+#root {
+    flex: 1;
+}
+
+footer {
+    background: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Glacial Indifference', sans-serif;
+    bottom: 0;
+    position: relative;
+    display: none;
+}

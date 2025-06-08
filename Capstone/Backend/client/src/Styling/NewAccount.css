@@ -1,0 +1,68 @@
+body {
+    font-family: 'Glacial Indifference', sans-serif;
+    background-color: #f8fff4;
+    margin: 0;
+    padding: 0;
+}
+
+.auth-container {
+    background-color: #CAD2C5;
+    width: 450px;
+    height: 750px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border: 3px solid #2F3E46;
+}
+
+    .auth-container button {
+        width: 200%;
+        max-width: 300px;
+        background-color: #2F3E46;
+        color: white;
+        font-size: 18px;
+        padding: 14px;
+        border-radius: 25px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+    }
+
+    .auth-container input {
+        width: 90%;
+        background-color: #E5E5E5;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        margin: 8px 0;
+        border-radius: 5px;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-container .logo {
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto 15px auto;
+    }
+
+        .auth-container .logo img {
+            height: 100px;
+            width: auto;
+            border-radius: 50%;
+        }
+
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2F3E46;
+}
+
+.divider {
+    background-color: #2F3E46;
+    width: 350px;
+    height: 4px;
+}
